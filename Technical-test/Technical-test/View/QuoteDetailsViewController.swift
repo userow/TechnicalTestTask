@@ -9,7 +9,7 @@ import UIKit
 
 class QuoteDetailsViewController: UIViewController {
     
-    private var quote:Quote? = nil
+    private var quote: Quote? = nil
     
     let symbolLabel = UILabel()
     let nameLabel = UILabel()
@@ -17,35 +17,33 @@ class QuoteDetailsViewController: UIViewController {
     let currencyLabel = UILabel()
     let readableLastChangePercentLabel = UILabel()
     let favoriteButton = UIButton()
-    
-    
-    
-    
+
     init(quote:Quote) {
         super.init(nibName: nil, bundle: nil)
         self.quote = quote
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
         addSubviews()
         setupAutolayout()
+
         symbolLabel.text = quote?.symbol
         nameLabel.text = quote?.name
         lastLabel.text = quote?.last
         currencyLabel.text = quote?.currency
         readableLastChangePercentLabel.text = quote?.readableLastChangePercent
-        
+
+        favoriteButton.isSelected = quote?.isFavorite ?? false
     }
-    
+
     func addSubviews() {
-        
         symbolLabel.textAlignment = .center
         symbolLabel.font = .boldSystemFont(ofSize: 40)
         
@@ -72,8 +70,8 @@ class QuoteDetailsViewController: UIViewController {
         favoriteButton.layer.borderColor = UIColor.black.cgColor
         favoriteButton.addTarget(self, action: #selector(didPressFavoriteButton), for: .touchUpInside)
         favoriteButton.setTitleColor(.black, for: .normal)
-        
-        
+        favoriteButton.setTitleColor(.yellow, for: .selected)
+
         view.addSubview(symbolLabel)
         view.addSubview(nameLabel)
         view.addSubview(lastLabel)
@@ -127,8 +125,13 @@ class QuoteDetailsViewController: UIViewController {
         ])
     }
     
-    
     @objc func didPressFavoriteButton(_ sender:UIButton!) {
-        // TODO
+        print("fav tapped")
+
+        if let key = quote?.isin {
+            FavoritesManager.shared.toggleFavorite(key: key)
+
+            favoriteButton.isSelected = !favoriteButton.isSelected 
+        }
     }
 }
